@@ -4,6 +4,8 @@ from multimodel import MultiModalSearch
 
 st.set_page_config(layout="wide")
 
+image_data_path = "images"
+
 def resize_image(image, width=400, height=400):
     image = Image.open(image)
     return image.resize((width, height))
@@ -11,7 +13,7 @@ def resize_image(image, width=400, height=400):
 
 def main():
     st.markdown("<h1 style = 'text-align:center;'>Text To Image Recommendation System</h1>",unsafe_allow_html=True)
-    multimodalsearch = MultiModalSearch(document_directory="images")
+    multimodalsearch = MultiModalSearch(document_directory=image_data_path)
 
     query = st.text_input("Enter you query")
 
