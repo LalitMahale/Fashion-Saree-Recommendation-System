@@ -1,38 +1,40 @@
 import streamlit as st
+from PIL import Image
 from multimodel import MultiModalSearch
 
 st.set_page_config(layout="wide")
 
+def resize_image(image, width=400, height=400):
+    image = Image.open(image)
+    return image.resize((width, height))
 
 
 def main():
-    st.markdown("<h1 style = 'text-align:center; color:brown'>Image Recommendation system</h1>",unsafe_allow_html=True)
-    multimodalsearch = MultiModalSearch()
+    st.markdown("<h1 style = 'text-align:center;'>Text To Image Recommendation System</h1>",unsafe_allow_html=True)
+    multimodalsearch = MultiModalSearch(document_directory="images")
 
     query = st.text_input("Enter you query")
 
-    if st.button("Search"):
-        if len(query) > 0 :
-            results = multimodalsearch.search(query=query)
-            st.info(f'Query : **{query}**')
-            st.subheader("Results")
-            col1,col2,col3 = st.columns(3)
+    if st.button("Search") and len(query) > 0:
+        st.info(f'Query : **{query.strip()}**') 
+        results = multimodalsearch.search(query=query)
+        st.subheader("Results")
+        col1,col2,col3 = st.columns(3)
 
-            with col1:
-                st.write(f"Score : {round(results[0].score*100,2)}")
-                st.image(results[0].content, use_container_width=True)
+        with col1:
+            resized_img1 = resize_image(results[0].content)
+            st.image(resized_img1, use_column_width=True)  
+            
+        with col2:
+            resized_img2 = resize_image(results[1].content)
+            st.image(resized_img2, use_column_width=True)
 
-            with col2:
-                st.write(f"Score : {round(results[1].score*100,2)}")
-                st.image(results[1].content, use_container_width=True)
+        with col3:
+            resized_img3 = resize_image(results[2].content)
+            st.image(resized_img3, use_column_width=True)
 
-
-            with col3:
-                st.write(f"Score : {round(results[2].score*100,2)}")
-                st.image(results[2].content, use_container_width=True)
-
-        else:
-            st.warning("Please Enter the query .......")
+    else:
+        st.warning("Please Enter the query .......")
 
 
 
